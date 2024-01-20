@@ -6,16 +6,16 @@ import Seo from '../components/seo'
 
 const BlogPage = ({data}) => {
     return (
-        <Layout pageTitle="My Blog Posts">
-            <ul>
-                {
-                    data.allFile.nodes.map(node => (
-                        <li key={node.name}>
-                            {node.name}
-                        </li>
-                    ))
-                }
-            </ul>
+        <Layout pageTitle="My Blog Posts">      
+            {
+                data.allMdx.nodes.map((node) => (
+                    <article key={node.id}>
+                        <h2>{node.frontmatter.title}</h2>
+                        <p>Posted: {node.frontmatter.date}</p>
+                        <p>{node.excerpt}</p>
+                    </article>
+                ))
+            }         
         </Layout>
     )
 }
@@ -26,9 +26,14 @@ BlogPage.propTypes = {
 
 export const query = graphql`
     query {
-        allFile {
+        allMdx(sort: {frontmatter: {date: DESC}}) {
           nodes {
-            name
+            frontmatter {
+              title
+              date(formatString: "MMM D, YYYY")
+            }
+            id
+            excerpt
           }
         }
     }
